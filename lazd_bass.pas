@@ -8,7 +8,7 @@
   Unload_BASSDLL to unload 
   Important !!! Always use () after a function or procedure without parameter
   
-  Lazarus port - bb - sdtp - february 2022
+  Lazarus port - bb - sdtp - december 2022
 *********************************************************************************}
 
 unit lazd_bass;
@@ -521,7 +521,7 @@ const
 type
   DWORD = Cardinal;
   BOOL = LongBool;
-  QWORD = Int64;
+  //QWORD = Int64; // Wrong definition. Prperly defined by Lazarus.
 
   HMUSIC = DWORD;       // MOD music handle
   HSAMPLE = DWORD;      // sample handle
@@ -840,7 +840,7 @@ var
 
   // Dynamic functions declaration as variables
   BASS_SetConfig:function(option, value: DWORD): BOOL; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
-  BASS_GetConfig:function(option: DWORD): DWORD; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
+  BASS_GetConfig:function(option: DWORD): LongInt{DWORD}; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
   BASS_SetConfigPtr:function(option: DWORD; value: Pointer): BOOL; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
   BASS_GetConfigPtr:function(option: DWORD): Pointer; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
   BASS_GetVersion:function: DWORD; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
@@ -852,7 +852,7 @@ var
     BASS_Init:function(device: Integer; freq, flags: DWORD; win: Pointer; clsid: Pointer): BOOL; cdecl; 
   {$ENDIF}
   BASS_SetDevice:function(device: DWORD): BOOL; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
-  BASS_GetDevice:function: DWORD; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
+  BASS_GetDevice:function: LongInt{DWORD}; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
   BASS_Free:function: BOOL; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
   {$IFDEF WINDOWS}
     BASS_GetDSoundObject:function(obj: DWORD): Pointer; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
@@ -890,7 +890,7 @@ var
   BASS_SampleGetInfo:function(handle: HSAMPLE; var info: BASS_SAMPLE): BOOL; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
   BASS_SampleSetInfo:function(handle: HSAMPLE; var info: BASS_SAMPLE): BOOL; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
   BASS_SampleGetChannel:function(handle: HSAMPLE; flags: DWORD): DWORD; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
-  BASS_SampleGetChannels:function(handle: HSAMPLE; channels: Pointer): DWORD; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
+  BASS_SampleGetChannels:function(handle: HSAMPLE; channels: Pointer): Longint{DWORD}; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
   BASS_SampleStop:function(handle: HSAMPLE): BOOL; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
 
   BASS_StreamCreate:function(freq, chans, flags: DWORD; proc: STREAMPROC; user: Pointer): HSTREAM; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
@@ -898,9 +898,9 @@ var
   BASS_StreamCreateURL:function(url: PChar; offset: DWORD; flags: DWORD; proc: DOWNLOADPROC; user: Pointer):HSTREAM; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
   BASS_StreamCreateFileUser:function(system, flags: DWORD; var procs: BASS_FILEPROCS; user: Pointer): HSTREAM; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
   BASS_StreamFree:function(handle: HSTREAM): BOOL; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
-  BASS_StreamGetFilePosition:function(handle: HSTREAM; mode: DWORD): QWORD; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
-  BASS_StreamPutData:function(handle: HSTREAM; buffer: Pointer; length: DWORD): DWORD; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
-  BASS_StreamPutFileData:function(handle: HSTREAM; buffer: Pointer; length: DWORD): DWORD; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
+  BASS_StreamGetFilePosition:function(handle: HSTREAM; mode: DWORD): Int64{QWORD}; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
+  BASS_StreamPutData:function(handle: HSTREAM; buffer: Pointer; length: DWORD): LongInt{DWORD}; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
+  BASS_StreamPutFileData:function(handle: HSTREAM; buffer: Pointer; length: DWORD): LongInt{DWORD}; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
 
   BASS_MusicLoad:function(mem: BOOL; f: Pointer; offset: QWORD; length, flags, freq: DWORD): HMUSIC; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
   BASS_MusicFree:function(handle: HMUSIC): BOOL; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
@@ -908,22 +908,22 @@ var
   BASS_RecordGetDeviceInfo:function(device: DWORD; var info: BASS_DEVICEINFO): BOOL; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
   BASS_RecordInit:function(device: Integer):BOOL; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
   BASS_RecordSetDevice:function(device: DWORD): BOOL; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
-  BASS_RecordGetDevice:function: DWORD; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
+  BASS_RecordGetDevice:function: longInt{DWORD}; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
   BASS_RecordFree:function: BOOL; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
   BASS_RecordGetInfo:function(var info: BASS_RECORDINFO): BOOL; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
   BASS_RecordGetInputName:function(input: Integer): PAnsiChar; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
   BASS_RecordSetInput:function(input: Integer; flags: DWORD; volume: Single): BOOL; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
-  BASS_RecordGetInput:function(input: Integer; var volume: Single): DWORD; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
+  BASS_RecordGetInput:function(input: Integer; var volume: Single): LongInt{DWORD}; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
   BASS_RecordStart:function(freq, chans, flags: DWORD; proc: RECORDPROC; user: Pointer): HRECORD; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
 
   BASS_ChannelBytes2Seconds:function(handle: DWORD; pos: QWORD): Double; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
-  BASS_ChannelSeconds2Bytes:function(handle: DWORD; pos: Double): QWORD; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
-  BASS_ChannelGetDevice:function(handle: DWORD): DWORD; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
+  BASS_ChannelSeconds2Bytes:function(handle: DWORD; pos: Double): Int64{QWORD}; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
+  BASS_ChannelGetDevice:function(handle: DWORD): LongInt{DWORD}; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
   BASS_ChannelSetDevice:function(handle, device: DWORD): BOOL; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
   BASS_ChannelIsActive:function(handle: DWORD): DWORD; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
   BASS_ChannelGetInfo:function(handle: DWORD; var info: BASS_CHANNELINFO):BOOL;{$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
   BASS_ChannelGetTags:function(handle: HSTREAM; tags: DWORD): PAnsiChar; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
-  BASS_ChannelFlags:function(handle, flags, mask: DWORD): DWORD; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
+  BASS_ChannelFlags:function(handle, flags, mask: DWORD): LongInt{DWORD}; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
   BASS_ChannelUpdate:function(handle, length: DWORD): BOOL; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
   BASS_ChannelLock:function(handle: DWORD; lock: BOOL): BOOL; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
   BASS_ChannelFree:function(handle: DWORD): BOOL; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
@@ -940,12 +940,12 @@ var
   BASS_ChannelGet3DAttributes:function(handle: DWORD; var mode: DWORD; var min, max: Single; var iangle, oangle, outvol: DWORD): BOOL; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
   BASS_ChannelSet3DPosition:function(handle: DWORD; var pos, orient, vel: BASS_3DVECTOR): BOOL; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
   BASS_ChannelGet3DPosition:function(handle: DWORD; var pos, orient, vel: BASS_3DVECTOR): BOOL; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
-  BASS_ChannelGetLength:function(handle, mode: DWORD): QWORD; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
+  BASS_ChannelGetLength:function(handle, mode: DWORD): Int64{QWORD}; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
   BASS_ChannelSetPosition:function(handle: DWORD; pos: QWORD; mode: DWORD): BOOL; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
-  BASS_ChannelGetPosition:function(handle, mode: DWORD): QWORD; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
-  BASS_ChannelGetLevel:function(handle: DWORD): DWORD; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
+  BASS_ChannelGetPosition:function(handle, mode: DWORD): Int64{QWORD}; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
+  BASS_ChannelGetLevel:function(handle: DWORD): LongInt{DWORD}; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
   BASS_ChannelGetLevelEx:function(handle: DWORD; levels: PSingle; length: Single; flags: DWORD): BOOL; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
-  BASS_ChannelGetData:function(handle: DWORD; buffer: Pointer; length: DWORD): DWORD; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
+  BASS_ChannelGetData:function(handle: DWORD; buffer: Pointer; length: DWORD): LongInt{DWORD}; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
   BASS_ChannelSetSync:function(handle: DWORD; type_: DWORD; param: QWORD; proc: SYNCPROC; user: Pointer): HSYNC; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
   BASS_ChannelRemoveSync:function(handle: DWORD; sync: HSYNC): BOOL; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
   BASS_ChannelSetDSP:function(handle: DWORD; proc: DSPPROC; user: Pointer; priority: Integer): HDSP; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 

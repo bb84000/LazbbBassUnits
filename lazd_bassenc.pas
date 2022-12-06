@@ -8,7 +8,7 @@
   Unload_BASSENCDLL to unload 
   Important !!! Always use () after a function or procedure without parameter
   
-  Lazarus port - bb - sdtp - february 2022
+  Lazarus port - bb - sdtp - december 2022
 }
 
 Unit lazd_bassenc;
@@ -183,7 +183,7 @@ var
   BASS_Encode_SetPaused:function(handle:DWORD; paused:BOOL): BOOL; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
   BASS_Encode_Write:function(handle:DWORD; buffer:Pointer; length:DWORD): BOOL; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
   BASS_Encode_SetNotify:function(handle:DWORD; proc:ENCODENOTIFYPROC; user:Pointer): BOOL; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
-  BASS_Encode_GetCount:function(handle:HENCODE; count:DWORD): QWORD; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
+  BASS_Encode_GetCount:function(handle:HENCODE; count:DWORD): Int64{QWORD}; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
   BASS_Encode_SetChannel:function(handle:DWORD; channel:DWORD): BOOL; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF}; 
   BASS_Encode_GetChannel:function(handle:HENCODE): DWORD; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
 

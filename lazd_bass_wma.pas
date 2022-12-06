@@ -8,7 +8,7 @@
   Unload_BASSWMADLL to unload 
   Important !!! Always use () after a function or procedure without parameter
 
-  Lazarus port - bb - sdtp - february 2022
+  Lazarus port - bb - sdtp - december 2022
 }
 
 unit lazd_bass_wma;
@@ -121,7 +121,7 @@ var
   BASS_WMA_EncodeOpenPublishMulti:function(freq,chans,flags:DWORD; bitrates:PDWORD; url,user,pass:PChar): HWMENCODE; stdcall; 
   BASS_WMA_EncodeGetPort:function(handle:HWMENCODE): DWORD; stdcall;
   BASS_WMA_EncodeSetNotify:function(handle:HWMENCODE; proc:CLIENTCONNECTPROC; user:Pointer): BOOL; stdcall; 
-  BASS_WMA_EncodeGetClients:function(handle:HWMENCODE): DWORD; stdcall;
+  BASS_WMA_EncodeGetClients:function(handle:HWMENCODE): LongInt{DWORD}; stdcall;
   BASS_WMA_EncodeSetTag:function(handle:HWMENCODE; tag,text:PChar; form:DWORD): BOOL; stdcall; 
   BASS_WMA_EncodeWrite:function(handle:HWMENCODE; buffer:Pointer; length:DWORD): BOOL; stdcall; 
   BASS_WMA_EncodeClose:function(handle:HWMENCODE): BOOL; stdcall; 
